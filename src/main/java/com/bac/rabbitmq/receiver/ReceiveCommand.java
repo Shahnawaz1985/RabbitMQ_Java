@@ -2,6 +2,7 @@ package com.bac.rabbitmq.receiver;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeoutException;
@@ -40,7 +41,7 @@ public class ReceiveCommand {
 			System.out.println("[*] Waiting for messages from SendCommnad. Press Ctrl-C to exit.");
 			
 			final DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-				final String message = new String(delivery.getBody(), "UTF-8");
+				final String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
 				System.out.println("[x] Received '" + message + "'");
 			};
 			
