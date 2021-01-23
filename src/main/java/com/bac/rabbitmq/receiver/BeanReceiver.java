@@ -27,7 +27,7 @@ public class BeanReceiver {
 		try (Connection conn = factory.newConnection()) {
 
 			Channel channel = conn.createChannel();
-			channel.exchangeDeclare(IConstants.POJO_EXCHANGE, BuiltinExchangeType.DIRECT);
+			//channel.exchangeDeclare(IConstants.POJO_EXCHANGE, "direct");
 			channel.queueBind(IConstants.POJO_QUEUE_NAME, IConstants.POJO_EXCHANGE, IConstants.POJO_EXCHANGE_ROUTING_KEY);
 			System.out.println("[*] Waiting for messages from BeanPublisher. Press Ctrl-C to exit.");
 
@@ -44,8 +44,9 @@ public class BeanReceiver {
 				System.out.println("[x] Received '" + user + "'");
 			};
 			channel.basicQos(10);
-			channel.basicConsume(IConstants.POJO_QUEUE_NAME, true, deliverCallback, consumerTag -> {
-			});
+			for(int i = 0; i < 10; i++) {
+				channel.basicConsume(IConstants.POJO_QUEUE_NAME, true, deliverCallback, consumerTag -> {});
+			}
 		} catch (IOException | TimeoutException e) {
 			// catch (Throwable e) {
 			System.out.println("Exception captured while receiving message on [" + IConstants.POJO_QUEUE_NAME + "]");

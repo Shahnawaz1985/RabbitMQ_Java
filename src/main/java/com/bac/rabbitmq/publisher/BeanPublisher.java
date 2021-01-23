@@ -22,18 +22,21 @@ import com.rabbitmq.client.ConnectionFactory;
 public class BeanPublisher {
 
 	public static void main(String[] args) {
-		User user = PojoUtility.createUser();
+		User user = null;
 
 		ConnectionFactory factory = ConnectionFactoryUtil.createConnectionFactory();
 
 		try (Connection conn = factory.newConnection()) {
 
 			Channel channel = conn.createChannel();
-			channel.exchangeDeclare(IConstants.POJO_EXCHANGE, BuiltinExchangeType.DIRECT);
+			channel.exchangeDeclare(IConstants.POJO_EXCHANGE, "direct");
 			//channel.queueDeclare(IConstants.POJO_QUEUE_NAME, true, false, false, null);
 			//channel.basicPublish("", IConstants.POJO_QUEUE_NAME, null, PojoUtility.getBytes(user));
-			channel.basicPublish(IConstants.POJO_EXCHANGE, IConstants.POJO_EXCHANGE_ROUTING_KEY, null, SerializationUtils.serialize(user));
-			System.out.println("[x] Sent '" + user + "'");
+			for(int i = 0; i < 10; i++) {
+				user = PojoUtility.createUser();
+				channel.basicPublish(IConstants.POJO_EXCHANGE, IConstants.POJO_EXCHANGE_ROUTING_KEY, null, SerializationUtils.serialize(user));
+				System.out.println("[x] Sent '" + user + "'");
+			}
 		} catch (IOException | TimeoutException e) {
 			System.out.println("Exception captured while sending message on [" + IConstants.POJO_QUEUE_NAME + "]");
 			e.printStackTrace();
