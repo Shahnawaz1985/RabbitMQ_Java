@@ -1,4 +1,4 @@
-package com.bac.messaging.util;
+package com.eric.messaging.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -7,10 +7,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.UUID;
 
-import com.bac.pojo.beans.User;
-import com.bac.pojo.beans.helper.Address;
-import com.bac.pojo.beans.helper.EmployementDetails;
-import com.bac.pojo.beans.helper.Name;
+import com.eric.pojo.beans.User;
+import com.eric.pojo.beans.helper.Address;
+import com.eric.pojo.beans.helper.EmployementDetails;
+import com.eric.pojo.beans.helper.Name;
 
 /**
  * @author Shahnawaz

@@ -1,11 +1,11 @@
-package com.bac.pojo.beans;
+package com.eric.pojo.beans;
 
 import java.io.Serializable;
 import java.util.UUID;
 
-import com.bac.pojo.beans.helper.Address;
-import com.bac.pojo.beans.helper.EmployementDetails;
-import com.bac.pojo.beans.helper.Name;
+import com.eric.pojo.beans.helper.Address;
+import com.eric.pojo.beans.helper.EmployementDetails;
+import com.eric.pojo.beans.helper.Name;
 
 /**
  * @author Shahnawaz

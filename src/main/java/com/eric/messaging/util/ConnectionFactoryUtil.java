@@ -1,4 +1,4 @@
-package com.bac.messaging.util;
+package com.eric.messaging.util;
 
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;

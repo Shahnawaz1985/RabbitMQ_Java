@@ -1,4 +1,4 @@
-package com.bac.rabbitmq.publisher;
+package com.eric.rabbitmq.publisher;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

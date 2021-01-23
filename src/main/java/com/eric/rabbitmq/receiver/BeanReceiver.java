@@ -1,14 +1,14 @@
-package com.bac.rabbitmq.receiver;
+package com.eric.rabbitmq.receiver;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.SerializationUtils;
 
-import com.bac.messaging.util.ConnectionFactoryUtil;
-import com.bac.messaging.util.IConstants;
-import com.bac.messaging.util.PojoUtility;
-import com.bac.pojo.beans.User;
+import com.eric.messaging.util.ConnectionFactoryUtil;
+import com.eric.messaging.util.IConstants;
+import com.eric.messaging.util.PojoUtility;
+import com.eric.pojo.beans.User;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;

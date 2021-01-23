@@ -1,4 +1,4 @@
-package com.bac.messaging.util;
+package com.eric.messaging.util;
 
 /**
  * 
