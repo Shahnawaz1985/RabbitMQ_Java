@@ -38,7 +38,7 @@ public class BeanReceiver {
 				}else {
 					System.out.println("[x] Received routing-key : '" +
 				            delivery.getEnvelope().getRoutingKey() +"'");
-					System.out.println("User in bytes received from :"+IConstants.POJO_QUEUE_NAME);
+					System.out.println("User in bytes received from exchange :"+delivery.getEnvelope().getExchange());
 				}
 				final User user = (User)SerializationUtils.deserialize(delivery.getBody());
 				System.out.println("[x] Received '" + user + "'");
