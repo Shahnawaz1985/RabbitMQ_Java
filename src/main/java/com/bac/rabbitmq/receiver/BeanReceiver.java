@@ -15,6 +15,11 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
+/**
+ * 
+ * @author Shahnawaz
+ *
+ */
 public class BeanReceiver {
 
 	public static void main(String[] args) {

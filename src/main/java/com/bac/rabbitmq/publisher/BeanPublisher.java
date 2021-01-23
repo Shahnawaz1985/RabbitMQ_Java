@@ -14,6 +14,11 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
+/**
+ * 
+ * @author Shahnawaz
+ *
+ */
 public class BeanPublisher {
 
 	public static void main(String[] args) {

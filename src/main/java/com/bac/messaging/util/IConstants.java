@@ -1,5 +1,10 @@
 package com.bac.messaging.util;
 
+/**
+ * 
+ * @author Shahnawaz
+ *
+ */
 public interface IConstants {
 	
 	

@@ -6,6 +6,11 @@ import java.security.NoSuchAlgorithmException;
 
 import com.rabbitmq.client.ConnectionFactory;
 
+/**
+ * 
+ * @author Shahnawaz
+ *
+ */
 public class ConnectionFactoryUtil {
 	
 	public static ConnectionFactory createConnectionFactory() {

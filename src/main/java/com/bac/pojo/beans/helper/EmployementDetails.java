@@ -3,7 +3,6 @@ package com.bac.pojo.beans.helper;
 import java.io.Serializable;
 
 /**
- * 
  * @author Shahnawaz
  *
  */
