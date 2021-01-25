@@ -9,6 +9,7 @@ import com.eric.messaging.util.ConnectionFactoryUtil;
 import com.eric.messaging.util.IConstants;
 import com.eric.messaging.util.PojoUtility;
 import com.eric.pojo.beans.User;
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -34,7 +35,10 @@ public class BeanPublisher {
 			//channel.basicPublish("", IConstants.POJO_QUEUE_NAME, null, PojoUtility.getBytes(user));
 			for(int i = 0; i < 10; i++) {
 				user = PojoUtility.createUser();
-				channel.basicPublish(IConstants.POJO_EXCHANGE, IConstants.POJO_EXCHANGE_ROUTING_KEY, null, SerializationUtils.serialize(user));
+				//setting delivery mode to 2 to make it persistent.
+				AMQP.BasicProperties props = new AMQP.BasicProperties.Builder().deliveryMode(2).build();
+				
+				channel.basicPublish(IConstants.POJO_EXCHANGE, IConstants.POJO_EXCHANGE_ROUTING_KEY, props, SerializationUtils.serialize(user));
 				System.out.println("[x] Sent '" + user + "'");
 			}
 		} catch (IOException | TimeoutException e) {
