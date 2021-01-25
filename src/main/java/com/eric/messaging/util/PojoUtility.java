@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Random;
 import java.util.UUID;
 
 import com.eric.pojo.beans.User;
@@ -33,7 +34,7 @@ public class PojoUtility {
 		user.setName(name);
 		
 		EmployementDetails empDetails = new EmployementDetails();
-		empDetails.setEmployeeId("JSC-1081");
+		empDetails.setEmployeeId("JSC-"+new Random().nextInt(10000));
 		empDetails.setJobGrade("Band-8");
 		empDetails.setDesignation("Solutions Architect");
 		empDetails.setDepartment("Product Strategy");
