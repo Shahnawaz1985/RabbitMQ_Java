@@ -28,8 +28,9 @@ public class BeanReceiver {
 	}
 	
 	private static void normalConsume() {
+		Channel channel = null;
 		try {
-			Channel channel = MessagingUtil.createAndConfigureChannel(IConstants.POJO_QUEUE_NAME, IConstants.POJO_EXCHANGE, IConstants.POJO_EXCHANGE_ROUTING_KEY);
+			channel = MessagingUtil.createAndConfigureChannel(IConstants.POJO_QUEUE_NAME, IConstants.POJO_EXCHANGE, IConstants.POJO_EXCHANGE_ROUTING_KEY);
 			channel.basicQos(10);
 			
 			System.out.println("[*] Waiting for messages from BeanPublisher. Press Ctrl-C to exit.");
@@ -53,14 +54,26 @@ public class BeanReceiver {
 			}			
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			if(null != channel) {
+				Connection conn = channel.getConnection();
+				if(null != conn) {
+					try {
+						conn.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+						throw new RuntimeException("Error occurred while closing connection!");
+					} 
+				}
+			}
 		}
 		
 	}
 
 	private static void consumeFromRetryExchange() {
-			
+		Channel channel = null;
 			try {
-				Channel channel = MessagingUtil.createAndConfigureChannel(IConstants.RETRY_QUEUE, IConstants.RETRY_LETTER_EXCHANGE, IConstants.RETRY_LETTER_ROUTING_KEY);
+				channel = MessagingUtil.createAndConfigureChannel(IConstants.RETRY_QUEUE, IConstants.RETRY_LETTER_EXCHANGE, IConstants.RETRY_LETTER_ROUTING_KEY);
 				channel.basicQos(10);
 				
 				System.out.println("[*] Waiting for messages from BeanPublisher in : " + IConstants.RETRY_QUEUE);
@@ -82,6 +95,20 @@ public class BeanReceiver {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+			}finally {
+
+				if(null != channel) {
+					Connection conn = channel.getConnection();
+					if(null != conn) {
+						try {
+							conn.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+							throw new RuntimeException("Error occurred while closing connection!");
+						} 
+					}
+				}
+			
 			}
 	}
 
