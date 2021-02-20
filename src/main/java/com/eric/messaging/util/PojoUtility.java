@@ -8,10 +8,13 @@ import java.io.ObjectOutputStream;
 import java.util.Random;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.eric.pojo.beans.User;
 import com.eric.pojo.beans.helper.Address;
 import com.eric.pojo.beans.helper.EmployementDetails;
 import com.eric.pojo.beans.helper.Name;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Shahnawaz
@@ -112,5 +115,58 @@ public class PojoUtility {
 		}
         return user;
     }
+	
+	/**
+	 * @param user user
+	 * @return Json String
+	 */
+	public static String generateJson(final User user) {
+		ObjectMapper mapper = null;
+		String jsonString = null;
+		if(null != user) {
+			mapper = new ObjectMapper();
+			
+			try {
+				jsonString = mapper.writeValueAsString(user);
+			}catch(IOException ex) {
+				System.out.println("Exception occurred while write Object to Json string.");
+				//throw new RuntimeException("Object to Json conversion failed!");
+			}
+		}else {
+			throw new IllegalArgumentException("User doesnot exist for Json conversion!");
+		}
+		return jsonString;
+	}
+	
+	/**
+	 * @param jsonString jsonString
+	 * @return user object converted from json String
+	 */
+	public static User generateUserFromJson(final String jsonString) {
+		ObjectMapper mapper = null;
+		User user = null;
+		if(!StringUtils.isEmpty(jsonString)) {
+			mapper = new ObjectMapper();
+			try {
+				user = mapper.readValue(jsonString, User.class);
+			}catch(IOException ex) {
+				System.out.println("Exception occurred while reading Object from Json string.");
+				//throw new RuntimeException("Json to Object conversion failed!");
+			}
+		}else {
+			throw new IllegalArgumentException("Json string is not valid for user object creation!");
+		}
+		return user;
+	}
+	
+	public static boolean validateUser(final User user) {
+		boolean isValidated = false;
+		if(null != user && null != user.getAddress() && null != user.getEmpDetails() && null != user.getName()) {
+			isValidated = true;
+		}else {
+			isValidated = false;
+		}
+		return isValidated;
+	}
 
 }
