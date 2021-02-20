@@ -18,6 +18,52 @@
 					<release>11</release>
 				</configuration>
 			</plugin>
+			<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<configuration>
+						<downloadSources>true</downloadSources>
+						<downloadJavadocs>true</downloadJavadocs>
+						<wtpversion>2.0</wtpversion>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>3.1.1</version>
+					<configuration>
+						<includeTestSourceDirectory>true</includeTestSourceDirectory>
+						<configLocation>google_checks.xml</configLocation>
+						<failOnViolation>false</failOnViolation>
+						<violationSeverity>warning</violationSeverity>
+						<consoleOutput>true</consoleOutput>
+					</configuration>
+					<executions>
+						<execution>
+							<phase>validate</phase>
+							<goals>
+								<goal>checkstyle</goal>
+								<!-- <goal>checkstyle</goal> <goal>checkstyle-aggregate</goal> -->
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<!-- pmd plugin added for pmd verifier -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-pmd-plugin</artifactId>
+					<version>3.14.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>findbugs-maven-plugin</artifactId>
+					<version>3.0.5</version>
+					<configuration>
+						<xmlOutput>true</xmlOutput>
+						<!-- Optional directory to put findbugs xdoc xml report -->
+						<xmlOutputDirectory>target/site</xmlOutputDirectory>
+					</configuration>
+				</plugin>
 		</plugins>
 	</build>
 
