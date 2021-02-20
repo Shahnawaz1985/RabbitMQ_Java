@@ -9,6 +9,7 @@ import org.apache.commons.lang3.SerializationUtils;
 
 import com.eric.messaging.util.ConnectionFactoryUtil;
 import com.eric.messaging.util.IConstants;
+import com.eric.messaging.util.MessagingUtil;
 import com.eric.messaging.util.PojoUtility;
 import com.eric.pojo.beans.User;
 import com.rabbitmq.client.AMQP;
@@ -24,16 +25,9 @@ import com.rabbitmq.client.ConnectionFactory;
 public class BeanPublisher {
 
 	public static void main(String[] args) {
-		//User user = null;
-
-		ConnectionFactory factory = ConnectionFactoryUtil.createConnectionFactory();
-
-		try (Connection conn = factory.newConnection()) {
-
-			Channel channel = conn.createChannel();
-			channel.exchangeDeclare(IConstants.POJO_EXCHANGE, "direct");
-			//channel.queueDeclare(IConstants.POJO_QUEUE_NAME, true, false, false, null);
-			//channel.basicPublish("", IConstants.POJO_QUEUE_NAME, null, PojoUtility.getBytes(user));
+		
+			Channel channel = MessagingUtil.declareExchange(IConstants.POJO_EXCHANGE, "direct");
+			try {
 			for(int i = 0; i < 10; i++) {
 				final User user =  PojoUtility.createUser();
 				final String userString = PojoUtility.generateJson(user);
@@ -46,21 +40,35 @@ public class BeanPublisher {
 				if(PojoUtility.validateUser(user)) {
 					channel.basicPublish(IConstants.POJO_EXCHANGE, IConstants.POJO_EXCHANGE_ROUTING_KEY, props, SerializationUtils.serialize(userString));
 				}else {
-					channel.exchangeDeclare(IConstants.RETRY_LETTER_EXCHANGE, "direct");
+					channel = MessagingUtil.declareExchange(IConstants.RETRY_LETTER_EXCHANGE, "direct");
+					
 					Map<String, Object> queue_args = new HashMap<String, Object>();
 					queue_args.put(IConstants.DEAD_LETTER_EXCHANGE_KEY, IConstants.RETRY_LETTER_EXCHANGE);
 					queue_args.put(IConstants.DEAD_LETTER_EXCHANGE_ROUTING_KEY, IConstants.RETRY_LETTER_ROUTING_KEY);
-					channel.queueDeclare(IConstants.RETRY_QUEUE, true, false, false, queue_args);
-					channel.queueBind(IConstants.RETRY_QUEUE, IConstants.RETRY_LETTER_EXCHANGE, IConstants.RETRY_LETTER_ROUTING_KEY);
+					
+					channel = MessagingUtil.queueDeclareAndBind(IConstants.RETRY_QUEUE, true, false, false, queue_args, IConstants.RETRY_LETTER_EXCHANGE, IConstants.RETRY_LETTER_ROUTING_KEY);
+					
 					channel.basicPublish(IConstants.RETRY_LETTER_EXCHANGE, IConstants.RETRY_LETTER_ROUTING_KEY, null, SerializationUtils.serialize(userString));
 					System.out.println("Dead letter exchange routing triggered!");
 				}
 				System.out.println("[x] Sent '" + userString + "'");
 			}
-		} catch (IOException | TimeoutException e) {
-			System.out.println("Exception captured while sending message on [" + IConstants.POJO_QUEUE_NAME + "]");
-			e.printStackTrace();
-		}
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("Exception captured while publishing message on [" + IConstants.POJO_QUEUE_NAME + "]");
+			}finally {
+				if(null != channel) {
+					Connection conn = channel.getConnection();
+					if(null != conn) {
+						try {
+							conn.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+							throw new RuntimeException("Error occurred while closing connection!");
+						} 
+					}
+				}
+			}
 	}
 
 }

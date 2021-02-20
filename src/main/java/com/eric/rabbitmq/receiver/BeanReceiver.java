@@ -19,11 +19,12 @@ import com.rabbitmq.client.DeliverCallback;
 public class BeanReceiver {
 
 	public static void main(String[] args) {
-			normalConsume();
-			consumeFromRetryExchange();
+		BeanReceiver receiver = new BeanReceiver();
+		receiver.normalConsume();
+		receiver.consumeFromRetryExchange();
 	}
 	
-	private static void normalConsume() {
+	public void normalConsume() {
 		Channel channel = null;
 		try {
 			channel = MessagingUtil.createAndConfigureChannel(IConstants.POJO_QUEUE_NAME, IConstants.POJO_EXCHANGE, IConstants.POJO_EXCHANGE_ROUTING_KEY);
@@ -66,7 +67,7 @@ public class BeanReceiver {
 		
 	}
 
-	private static void consumeFromRetryExchange() {
+	public void consumeFromRetryExchange() {
 		Channel channel = null;
 			try {
 				channel = MessagingUtil.createAndConfigureChannel(IConstants.RETRY_QUEUE, IConstants.RETRY_LETTER_EXCHANGE, IConstants.RETRY_LETTER_ROUTING_KEY);

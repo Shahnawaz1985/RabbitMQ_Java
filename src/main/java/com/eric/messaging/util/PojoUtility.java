@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,7 +43,14 @@ public class PojoUtility {
 		empDetails.setDesignation("Solutions Architect");
 		empDetails.setDepartment("Product Strategy");
 		empDetails.setSalary(5000000.00);
-		empDetails.setBonus_per_annum(125.00);
+		
+		double min = 50.0;
+		double max = 75.0;
+		
+		double calculated_bonus = ThreadLocalRandom.current().nextDouble(min, max);
+				
+		double rounded_bonus = Math.round(calculated_bonus * 100.0) / 100.0; 
+		empDetails.setBonus_per_annum(rounded_bonus);
 		
 		user.setEmpDetails(empDetails);
 		
