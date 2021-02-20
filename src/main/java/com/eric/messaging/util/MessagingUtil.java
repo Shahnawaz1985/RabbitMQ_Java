@@ -54,6 +54,7 @@ public class MessagingUtil {
 			e.printStackTrace();
 			throw new RuntimeException("Error occurred while channel configuring for message consumption!");
 		}
+		System.out.println("Exchange declared with protocol : "+exchange.protocolMethodName());
 		return channel;
 	}
 	
@@ -82,6 +83,7 @@ public class MessagingUtil {
 			e.printStackTrace();
 			throw new RuntimeException("Error occurred while channel configuring for message consumption!");
 		}
+		System.out.println("Queue declared with protocol method name :"+queue_bind.protocolMethodName());
 		return channel;
 	}
 	
