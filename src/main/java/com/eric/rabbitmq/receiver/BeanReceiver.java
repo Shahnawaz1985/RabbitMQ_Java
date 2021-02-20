@@ -6,6 +6,7 @@ import java.util.concurrent.TimeoutException;
 import org.apache.commons.lang3.SerializationUtils;
 import com.eric.messaging.util.ConnectionFactoryUtil;
 import com.eric.messaging.util.IConstants;
+import com.eric.messaging.util.MessagingUtil;
 //import com.eric.messaging.util.PojoUtility;
 import com.eric.pojo.beans.User;
 //import com.rabbitmq.client.BuiltinExchangeType;
@@ -22,12 +23,15 @@ import com.rabbitmq.client.DeliverCallback;
 public class BeanReceiver {
 
 	public static void main(String[] args) {
-		ConnectionFactory factory = ConnectionFactoryUtil.createConnectionFactory();
-		try (Connection conn = factory.newConnection()) {
-
-			Channel channel = conn.createChannel();
-			//channel.exchangeDeclare(IConstants.POJO_EXCHANGE, "direct");
-			channel.queueBind(IConstants.POJO_QUEUE_NAME, IConstants.POJO_EXCHANGE, IConstants.POJO_EXCHANGE_ROUTING_KEY);
+			normalConsume();
+			consumeFromRetryExchange();
+	}
+	
+	private static void normalConsume() {
+		try {
+			Channel channel = MessagingUtil.createAndConfigureChannel(IConstants.POJO_QUEUE_NAME, IConstants.POJO_EXCHANGE, IConstants.POJO_EXCHANGE_ROUTING_KEY);
+			channel.basicQos(10);
+			
 			System.out.println("[*] Waiting for messages from BeanPublisher. Press Ctrl-C to exit.");
 
 			final DeliverCallback deliverCallback = (consumerTag, delivery) -> {
@@ -42,49 +46,43 @@ public class BeanReceiver {
 				final String userString = (String)SerializationUtils.deserialize(delivery.getBody());
 				System.out.println("[x] Received '" + userString + "'");
 			};
-			channel.basicQos(10);
+			
+						
 			for(int i = 0; i < 10; i++) {
 				channel.basicConsume(IConstants.POJO_QUEUE_NAME, true, deliverCallback, consumerTag -> {});
 			}			
-			consumeFromRetryExchange(conn, channel);
-			//Thread.sleep(100);
-		} catch (IOException | TimeoutException e) {
-			// catch (Throwable e) {
-			System.out.println("Exception captured while receiving message on [" + IConstants.POJO_QUEUE_NAME + "]");
-			e.printStackTrace();
-		} /*
-			 * catch (InterruptedException e) {
-			 * System.out.println("Thread interruption occurred!"); e.printStackTrace(); }
-			 */
-	}
-	
-	private static void consumeFromRetryExchange(final Connection conn, final Channel channel) {
-		try {
-			channel.queueBind(IConstants.RETRY_QUEUE, IConstants.RETRY_LETTER_EXCHANGE, IConstants.RETRY_LETTER_ROUTING_KEY);
-			System.out.println("[*] Waiting for messages from BeanPublisher in : "+IConstants.RETRY_QUEUE);
-			final DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-				//final User user = PojoUtility.fromBytes(delivery.getBody());
-				if(null == delivery.getBody()) {
-					System.out.println("Null bytes received from :"+IConstants.RETRY_QUEUE);
-				}else {
-					System.out.println("[x] Received routing-key : '" +
-				            delivery.getEnvelope().getRoutingKey() +"', delivery mode :"+delivery.getProperties().getDeliveryMode());
-					System.out.println("User in bytes received from exchange :"+delivery.getEnvelope().getExchange());
-				}
-				final String userString = (String)SerializationUtils.deserialize(delivery.getBody());
-				System.out.println("[x] Received '" + userString + "' from :"+delivery.getEnvelope().getExchange());
-			};
-			channel.basicQos(10);
-			for(int i = 0; i < 10; i++) {
-				channel.basicConsume(IConstants.RETRY_QUEUE, true, deliverCallback, consumerTag -> {});
-			}
 		} catch (IOException e) {
-			System.out.println("Exception captured while receiving message on [" + IConstants.RETRY_QUEUE + "]");
 			e.printStackTrace();
-		} /*
-			 * finally { try { channel.close(); conn.close(); } catch (IOException |
-			 * TimeoutException e) { e.printStackTrace(); } }
-			 */
+		}
+		
+	}
+
+	private static void consumeFromRetryExchange() {
+			
+			try {
+				Channel channel = MessagingUtil.createAndConfigureChannel(IConstants.RETRY_QUEUE, IConstants.RETRY_LETTER_EXCHANGE, IConstants.RETRY_LETTER_ROUTING_KEY);
+				channel.basicQos(10);
+				
+				System.out.println("[*] Waiting for messages from BeanPublisher in : " + IConstants.RETRY_QUEUE);
+				final DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+					// final User user = PojoUtility.fromBytes(delivery.getBody());
+					if (null == delivery.getBody()) {
+						System.out.println("Null bytes received from :" + IConstants.RETRY_QUEUE);
+					} else {
+						System.out.println("[x] Received routing-key : '" + delivery.getEnvelope().getRoutingKey()
+								+ "', delivery mode :" + delivery.getProperties().getDeliveryMode());
+						System.out.println("User in bytes received from exchange :" + delivery.getEnvelope().getExchange());
+					}
+					final String userString = (String) SerializationUtils.deserialize(delivery.getBody());
+					System.out.println("[x] Received '" + userString + "' from :" + delivery.getEnvelope().getExchange());
+				};				
+				
+				for(int i = 0; i < 10; i++) {
+					channel.basicConsume(IConstants.RETRY_QUEUE, true, deliverCallback, consumerTag -> {});
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 	}
 
 }
