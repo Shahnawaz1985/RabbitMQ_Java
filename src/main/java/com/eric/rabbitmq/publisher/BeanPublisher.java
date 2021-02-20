@@ -12,7 +12,6 @@ import com.eric.messaging.util.IConstants;
 import com.eric.messaging.util.PojoUtility;
 import com.eric.pojo.beans.User;
 import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
