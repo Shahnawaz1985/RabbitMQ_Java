@@ -1,16 +1,14 @@
 package com.eric.messaging.util;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
-import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.AMQP.Exchange;
+import com.rabbitmq.client.AMQP.Queue;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.AMQP.Exchange;
-import com.rabbitmq.client.AMQP.Queue;
 
 /**
  * 
