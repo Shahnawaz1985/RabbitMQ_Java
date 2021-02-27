@@ -79,7 +79,6 @@ public class BeanPublisher {
 			user.setAddress(null);
 			
 			if(!PojoUtility.validateUser(user)) {
-
 				Map<String, Object> queue_args = new HashMap<String, Object>();
 				queue_args.put(IConstants.DEAD_LETTER_EXCHANGE_KEY, IConstants.RETRY_LETTER_EXCHANGE);
 				queue_args.put(IConstants.DEAD_LETTER_EXCHANGE_ROUTING_KEY, IConstants.RETRY_LETTER_ROUTING_KEY);
