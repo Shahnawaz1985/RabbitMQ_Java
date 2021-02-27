@@ -67,7 +67,7 @@ public class BeanPublisher {
 	 * Publish with retry - Dead Letter Exchange publish.
 	 */
 	public void publishWithRetry() {
-		Channel channel = MessagingUtil.declareExchange(IConstants.POJO_EXCHANGE, "direct");
+		Channel channel = MessagingUtil.declareExchange(IConstants.RETRY_LETTER_EXCHANGE, "direct");
 		try {
 		for(int i = 0; i < 10; i++) {
 			final User user =  PojoUtility.createUser();
@@ -79,8 +79,7 @@ public class BeanPublisher {
 			user.setAddress(null);
 			
 			if(!PojoUtility.validateUser(user)) {
-				channel = MessagingUtil.declareExchange(IConstants.RETRY_LETTER_EXCHANGE, "direct");
-				
+
 				Map<String, Object> queue_args = new HashMap<String, Object>();
 				queue_args.put(IConstants.DEAD_LETTER_EXCHANGE_KEY, IConstants.RETRY_LETTER_EXCHANGE);
 				queue_args.put(IConstants.DEAD_LETTER_EXCHANGE_ROUTING_KEY, IConstants.RETRY_LETTER_ROUTING_KEY);
